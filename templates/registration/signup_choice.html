@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-gray-900/70 backdrop-blur border border-gray-800 rounded-2xl shadow-xl p-6 text-center">
+        <h1 class="text-3xl font-bold mb-6 tracking-tight">Join Django CRM</h1>
+        <p class="text-gray-400 mb-8">How would you like to sign up today?</p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{% url 'organizer-signup' %}"
+               class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition shadow-lg text-white font-semibold">
+                I am an Organizer
+            </a>
+            
+            <a href="{% url 'lead-signup' %}"
+               class="px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-700 transition shadow-lg text-white font-semibold">
+                I am a Lead
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

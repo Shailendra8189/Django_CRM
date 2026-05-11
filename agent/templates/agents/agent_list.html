@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% comment %} {% block content %}
+<h1 align="center"><b>Here are our Agents</b></h1>
+<hr />
+</br>
+
+<ul>
+    {% for agent in object_list %}
+    <li align="center"><b><a class="hover:text-blue-500" href="{% url 'agent:agent_detail' agent.pk %}">{{ agent.manager.username }}</a></b></li>
+    </br>
+    {% endfor %}
+</ul>
+</br>
+<hr />
+<b><a class="hover:text-blue-500" href="{% url 'agent:create_agent' %}">+ Add Agent</a>
+{% endblock content %} {% endcomment %}
+
+
+
+
+{% block content %}
+
+<!-- ================= TITLE ================= -->
+
+<h1 class="text-3xl font-bold mb-8 tracking-tight">
+    Agents Dashboard
+</h1>
+
+{% if request.user.role == "lead" %}
+<!-- ================= MESSAGE SECTION ================= -->
+<div class="mb-8 bg-gray-900/70 border border-gray-800 rounded-2xl p-6 shadow-xl">
+    <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
+        
+        <!-- Lead Message -->
+        <div class="flex-1">
+            <h3 class="text-sm font-semibold text-indigo-400 uppercase tracking-wider mb-2">My Message to Team:</h3>
+            <div class="bg-gray-800/50 rounded-xl p-4 min-h-[60px] border border-gray-700">
+                {% if request.user.lead_profile.msg %}
+                    <p class="text-gray-300">{{ request.user.lead_profile.msg }}</p>
+                {% else %}
+                    <p class="text-gray-500 italic">You haven't sent a message yet.</p>
+                {% endif %}
+            </div>
+            <a href="{% url 'leads:lead_message_update' request.user.lead_profile.pk %}" 
+               class="inline-block mt-3 text-xs font-medium text-indigo-400 hover:text-indigo-300 transition underline">
+                Edit Message
+            </a>
+        </div>
+
+        <!-- Team Reply -->
+        <div class="flex-1">
+            <h3 class="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-2">Team's Reply:</h3>
+            <div class="bg-gray-800/50 rounded-xl p-4 min-h-[60px] border border-gray-700">
+                {% if request.user.lead_profile.reply %}
+                    <p class="text-gray-300">{{ request.user.lead_profile.reply }}</p>
+                {% else %}
+                    <p class="text-gray-500 italic text-sm">Waiting for a reply...</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endif %}
+
+<!-- ================= ADD BUTTON ================= -->
+
+{% if request.user.role == "organizer" %}
+<div class="mb-8">
+    <a href="{% url 'agent:create_agent' %}"
+       class="inline-block px-5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">
+        ➕ Add Agent
+    </a>
+</div>
+{% endif %}
+
+<!-- ================= AGENT GRID ================= -->
+
+<div class="grid gap-5">
+
+    {% for agent in object_list %}
+
+    <div class="bg-gray-900/70 border border-gray-800 rounded-2xl p-5 hover:border-indigo-500 hover:shadow-lg transition">
+
+        <!-- Top Section -->
+        <div class="flex justify-between items-center">
+
+            <div>
+                <h2 class="text-lg font-semibold text-indigo-400">
+                    {% if request.user.role == "organizer" %}
+                    <a href="{% url 'agent:agent_detail' agent.pk %}">
+                        {{ agent.manager.username }}
+                    </a>
+                    {% else %}
+                    <span>{{ agent.manager.username }}</span>
+                    {% endif %}
+                </h2>
+
+                <p class="text-sm text-gray-400">
+                    Agent ID: {{ agent.pk }}
+                </p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                {% if request.user.role == "lead" %}
+                    {% if request.user.lead_profile.agent == agent %}
+                        <span class="text-xs bg-indigo-500 text-white px-3 py-1 rounded-lg">My Agent</span>
+                    {% else %}
+                        <form method="post" action="{% url 'leads:select_agent' agent.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="text-xs bg-gray-700 hover:bg-gray-600 text-white px-3 py-1 rounded-lg transition">Select</button>
+                        </form>
+                    {% endif %}
+                {% endif %}
+                <span class="text-xs bg-gray-800 text-gray-300 px-3 py-1 rounded-lg">
+                    Active
+                </span>
+            </div>
+
+        </div>
+
+        <!-- Divider -->
+        <div class="border-t border-gray-800 my-4"></div>
+
+        <!-- Info Section -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+
+            <div>
+                <p class="text-gray-500">Username</p>
+                <p>{{ agent.manager.username }}</p>
+            </div>
+
+            <div>
+                <p class="text-gray-500">Email</p>
+                <p>{{ agent.manager.email }}</p>
+            </div>
+
+            <div>
+                <p class="text-gray-500">Role</p>
+                <p>{{ agent.manager.role }}</p>
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+{% endblock content %}

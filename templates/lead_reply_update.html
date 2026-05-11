@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+{% load tailwind_filters %}
+
+{% block content %}
+
+<!-- ================= TOP NAV LINKS ================= -->
+
+<div class="flex justify-between items-center mb-6">
+
+    <a href="{% url 'leads:home_page' %}"
+       class="text-sm text-gray-400 hover:text-indigo-400 transition">
+        ← Dashboard
+    </a>
+
+</div>
+
+<!-- ================= CENTER CARD ================= -->
+
+<div class="max-w-2xl mx-auto">
+
+    <div class="bg-gray-900/70 backdrop-blur border border-gray-800 rounded-2xl shadow-xl p-6">
+
+        <!-- Title -->
+        <h1 class="text-2xl font-bold text-center mb-6">
+            Reply to Lead
+        </h1>
+
+        <p class="text-center text-gray-400 mb-6">
+            Replying to {{ lead.first_name }} {{ lead.last_name }}
+        </p>
+
+        <!-- Message from Lead -->
+        <div class="bg-gray-800 rounded-xl p-4 mb-6">
+            <p class="text-xs text-indigo-400 mb-1 font-semibold uppercase tracking-wider">Lead's Message:</p>
+            <p class="text-gray-300">
+                {% if lead.msg %}
+                    {{ lead.msg }}
+                {% else %}
+                    <span class="italic text-gray-500 text-sm">No message from lead yet.</span>
+                {% endif %}
+            </p>
+        </div>
+
+        <!-- FORM -->
+        <form method="POST" class="space-y-5">
+            {% csrf_token %}
+
+            <div class="text-gray-200">
+                {{ form|crispy }}
+            </div>
+
+            <!-- BUTTON -->
+            <button
+                class="w-full bg-indigo-600 hover:bg-indigo-700 transition text-white font-medium py-3 rounded-xl shadow-lg">
+                Send Reply
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<style>
+    input, select, textarea {
+        background-color: #0f172a !important; /* dark slate */
+        color: #e5e7eb !important;
+        border: 1px solid #374151 !important;
+        border-radius: 12px !important;
+        padding: 10px !important;
+        width: 100%;
+    }
+
+    textarea {
+        min-height: 120px;
+    }
+
+    input:focus, select:focus, textarea:focus {
+        outline: none !important;
+        border-color: #6366f1 !important;
+        box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.4) !important;
+    }
+
+    label {
+        color: #cbd5e1 !important;
+        font-weight: 500;
+        margin-bottom: 4px;
+    }
+</style>
+{% endblock content %}
